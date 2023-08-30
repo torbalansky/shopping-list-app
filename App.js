@@ -12,7 +12,7 @@ import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore"
 import ShoppingLists from './components/ShoppingLists';
 import Welcome from './components/Welcome';
 import { useNetInfo } from '@react-native-community/netinfo';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { Alert, LogBox } from 'react-native';
 LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);

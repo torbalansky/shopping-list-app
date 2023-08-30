@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
 const ShoppingLists = ({ db, route, isConnected }) => {
-  const { userID, userName } = route.params;
+  const { userID, userName, color } = route.params;
   const navigation = useNavigation();
   const auth = getAuth();
 
@@ -83,7 +83,7 @@ const ShoppingLists = ({ db, route, isConnected }) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: "Shopping Planner",
+      headerTitle: "Return",
       headerRight: () => (
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Logout</Text>
@@ -93,7 +93,7 @@ const ShoppingLists = ({ db, route, isConnected }) => {
   }, []); 
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: color }]}>
       <Text style={styles.userName}>{userName}'s Shopping List</Text> 
       <FlatList
         style={styles.listsContainer}
@@ -153,15 +153,14 @@ const ShoppingLists = ({ db, route, isConnected }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#FFF"
+    flex: 1
   },
   listItem: {
     height: 50,
     justifyContent: "center",
     paddingHorizontal: 30,
-    borderBottomWidth: 1,
-    borderBottomColor: "#CCC",
+    borderBottomWidth: 2,
+    borderBottomColor: "#FFF",
     flex: 1,
     flexGrow: 1
   },
@@ -170,7 +169,7 @@ const styles = StyleSheet.create({
     flex: 0,
     margin: 5,
     padding: 10,
-    backgroundColor: "#FFF3CC",
+    backgroundColor: 'rgba(0, 0, 0, .2)',
     borderRadius: 4
   },
   listName: {
@@ -180,7 +179,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 10,
     borderColor: "#555",
-    borderWidth: 1,
+    borderWidth: 2,
     backgroundColor: "#FFF",
     borderRadius: 4
   },
@@ -221,12 +220,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 20,
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#AAA",
-    backgroundColor: "#ADD8E6",
-  },
-  headerTitle: {
-    textAlign: "right"
+    borderBottomWidth: 2,
+    borderBottomColor: "#FFF",
+    color: "#FFF",
+    backgroundColor: "#3498db",
+    textAlign: "center"
   }
 });
 
