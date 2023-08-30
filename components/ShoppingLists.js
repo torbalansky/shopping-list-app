@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Alert
 } from 'react-native';
-import { collection, addDoc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, query, where, doc, updateDoc  } from "firebase/firestore";
 import { getAuth, signOut } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
@@ -63,6 +63,7 @@ const ShoppingLists = ({ db, route, isConnected }) => {
   }
 
   const addShoppingList = async (newList) => {
+    newList.items = newList.items.map(item => ({ name: item, completed: false }));
     const newListRef = await addDoc(collection(db, "shoppinglists"), newList);
     if (newListRef.id) {
       setLists([newList, ...lists]);
@@ -90,7 +91,27 @@ const ShoppingLists = ({ db, route, isConnected }) => {
         </TouchableOpacity>
       ),
     });
-  }, []); 
+  }, [navigation]); 
+
+  const handleItemCompletionToggle = async (listId) => {
+    const updatedLists = lists.map(list => {
+      if (list.id === listId) {
+        return { ...list, completed: !list.completed };
+      }
+      return list;
+    });
+  
+    setLists(updatedLists);
+  
+    // Update the corresponding document in Firestore with the new completion status
+    const listRef = doc(db, "shoppinglists", listId);
+    console.log("updatedLists:", updatedLists);
+    const listToUpdate = updatedLists.find(list => list.id === listId);
+    console.log("listToUpdate:", listToUpdate);
+    await updateDoc(listRef, {
+      completed: updatedLists.find(list => list.id === listId).completed
+    });
+  }  
 
   return (
     <View style={[styles.container, { backgroundColor: color }]}>
@@ -100,7 +121,15 @@ const ShoppingLists = ({ db, route, isConnected }) => {
         data={lists}
         renderItem={({ item }) =>
           <View style={styles.listItem}>
-            <Text >{item.name}: {item.items.join(', ')}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text >{item.name}: {item.items ? item.items.map(subItem => subItem.name).join(', ') : ''}</Text>
+                <TouchableOpacity
+                  onPress={() => handleItemCompletionToggle(item.id)}
+                  style={[styles.completionIcon, { backgroundColor: item.completed ? "green" : "red" }]}
+                  >
+                  {item.completed ? <Text style={styles.tickIcon}>✓</Text> : <Text style={styles.iconText}></Text>}
+                </TouchableOpacity>
+            </View>
           </View>
         }
       />
@@ -176,7 +205,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 40,
     padding: 10,
-    fontWeight: "600",
+    fontWeight: "bold",
     marginBottom: 10,
     borderColor: "#555",
     borderWidth: 2,
@@ -225,6 +254,20 @@ const styles = StyleSheet.create({
     color: "#FFF",
     backgroundColor: "#3498db",
     textAlign: "center"
+  },
+  completionIcon: {
+    width: 20,
+    height: 20,
+    borderRadius: 5,
+    marginLeft: "auto",
+    borderColor: "#FFF",
+    borderWidth: 1
+  },
+  tickIcon: {
+    color: "#FFF",
+    fontWeight: "bold",
+    fontSize: 14,
+    marginLeft: 5
   }
 });
 
