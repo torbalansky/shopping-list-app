@@ -21,7 +21,6 @@ const Welcome = ({ navigation }) => {
     signInAnonymously(auth)
       .then(result => {
         navigation.navigate("ShoppingLists", { userID: result.user.uid, userName: userName, color });
-        Alert.alert("Signed in Successfully!");
       })
       .catch((error) => {
         Alert.alert("Unable to sign in, try later again.");

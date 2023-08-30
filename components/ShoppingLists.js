@@ -122,7 +122,7 @@ const ShoppingLists = ({ db, route, isConnected }) => {
         renderItem={({ item }) =>
           <View style={styles.listItem}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text >{item.name}: {item.items ? item.items.map(subItem => subItem.name).join(', ') : ''}</Text>
+              <Text style={{ fontSize: 20 }}>{item.name}: {item.items ? item.items.map(subItem => subItem.name).join(', ') : ''}</Text>
                 <TouchableOpacity
                   onPress={() => handleItemCompletionToggle(item.id)}
                   style={[styles.completionIcon, { backgroundColor: item.completed ? "green" : "red" }]}
@@ -199,13 +199,14 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     backgroundColor: 'rgba(0, 0, 0, .2)',
-    borderRadius: 4
+    borderRadius: 4,
   },
   listName: {
     width: 200,
     height: 40,
     padding: 10,
     fontWeight: "bold",
+    fontSize: 16,
     marginBottom: 10,
     borderColor: "#555",
     borderWidth: 2,
@@ -215,6 +216,7 @@ const styles = StyleSheet.create({
   item: {
     width: 280,
     height: 40,
+    fontSize: 16,
     padding: 10,
     marginLeft: 30,
     marginBottom: 10,
