@@ -7,7 +7,7 @@ const Welcome = ({ navigation }) => {
   const [userName, setUserName] = useState("");
   const [color, setColor] = useState("#FFF");
   const [selected, setSelected] = useState(null);
-  
+  // Function to define color styles for color selection buttons
   const getColorStyle = (color) => {
     return {
       width: 40,
@@ -17,9 +17,11 @@ const Welcome = ({ navigation }) => {
       borderWidth: color === selected ? 3 : 0
     }
   }
+  // Function to sign in the user anonymously
   const signInUser = () => {
     signInAnonymously(auth)
       .then(result => {
+        // Navigate to ShoppingLists screen with user data
         navigation.navigate("ShoppingLists", { userID: result.user.uid, userName: userName, color });
       })
       .catch((error) => {

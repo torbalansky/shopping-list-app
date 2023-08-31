@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
 const ShoppingLists = ({ db, route, isConnected }) => {
+  // Extract parameters from the route
   const { userID, userName, color } = route.params;
   const navigation = useNavigation();
   const auth = getAuth();
@@ -31,7 +32,7 @@ const ShoppingLists = ({ db, route, isConnected }) => {
       // useEffect code is re-executed.
       if (unsubShoppinglists) unsubShoppinglists();
       unsubShoppinglists = null;
-
+      // Query Firestore for user-specific shopping lists
       const q = query(collection(db, "shoppinglists"), where("uid", "==", userID));
       unsubShoppinglists = onSnapshot(q, (documentsSnapshot) => {
         let newLists = [];
@@ -49,11 +50,13 @@ const ShoppingLists = ({ db, route, isConnected }) => {
     }
   }, [isConnected]);
 
+  // Load cached shopping lists from AsyncStorage
   const loadCachedLists = async () => {
     const cachedLists = await AsyncStorage.getItem("shopping_lists") || [];
     setLists(JSON.parse(cachedLists));
   }
-
+  
+  // Cache shopping lists in AsyncStorage
   const cacheShoppingLists = async (listsToCache) => {
     try {
       await AsyncStorage.setItem('shopping_lists', JSON.stringify(listsToCache));
@@ -61,7 +64,7 @@ const ShoppingLists = ({ db, route, isConnected }) => {
       console.log(error.message);
     }
   }
-
+  // Add a new shopping list
   const addShoppingList = async (newList) => {
     newList.items = newList.items.map(item => ({ name: item, completed: false }));
     const newListRef = await addDoc(collection(db, "shoppinglists"), newList);
@@ -83,6 +86,7 @@ const ShoppingLists = ({ db, route, isConnected }) => {
   }
 
   useEffect(() => {
+    // Set navigation options (header) when component renders
     navigation.setOptions({
       headerTitle: "Return",
       headerRight: () => (
@@ -93,6 +97,7 @@ const ShoppingLists = ({ db, route, isConnected }) => {
     });
   }, [navigation]); 
 
+  // Toggle item completion status
   const handleItemCompletionToggle = async (listId) => {
     const updatedLists = lists.map(list => {
       if (list.id === listId) {
